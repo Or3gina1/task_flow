@@ -1,0 +1,53 @@
+<div class="container">
+    <h2>Разместить задачу</h2>
+
+    <form [formGroup]="taskForm">
+
+        <mat-form-field apperance="outline" class="form-field">
+            <mat-label>Заголовок</mat-label>
+            <input matInput type="text" placeholder="Заголовок" formControlName="title"/>
+            <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+                Поле должно быть заполнено!</mat-error>
+        </mat-form-field>
+        <mat-form-field apperance="outline" class="form-field">
+            <mat-label>Описание</mat-label>
+            <textarea matInput placeholder="Описание" formControlName="description"></textarea>
+            <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+                Поле должно быть заполнено!</mat-error>
+        </mat-form-field>
+
+        <mat-form-field apperance="outline" class="form-field">
+            <mat-label>Срок исполнения</mat-label>
+            <input matInput [matDatepicker]="dueDatePicker" placeholder="Выберите срок исполнения" formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #dueDatePicker></mat-datepicker>
+            <mat-error *ngIf="taskForm.get('dueDate')?.hasError('required')">
+                This Input Is Required!</mat-error>
+        </mat-form-field>
+
+        <mat-form-field apperance="outline" class="form-field">
+            <mat-label>Выбрать приоритет</mat-label>
+            <mat-select formControlName="priority" name="Priority">
+                <mat-option *ngFor="let priority of listOfPriorities" [value]="priority">
+                    {{priority}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="taskForm.get('priority')?.hasError('required')">
+                Поле должно быть заполнено!</mat-error>
+        </mat-form-field>
+
+        <mat-form-field apperance="outline" class="form-field">
+            <mat-label>Выбрать исполнителя</mat-label>
+            <mat-select formControlName="employeeId" name="employeeId">
+                <mat-option *ngFor="let employee of listOfEmployees" [value]="employee.id">
+                    {{employee.name}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="taskForm.get('employeeId')?.hasError('required')">
+                Поле должно быть заполнено!</mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="taskForm.invalid"
+            (click)="postTask()">Разместить задачу</button>
+    </form>
+</div>

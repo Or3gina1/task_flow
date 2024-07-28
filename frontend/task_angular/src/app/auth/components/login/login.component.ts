@@ -31,28 +31,46 @@ export class LoginComponent {
     this.hidePassword = !this.hidePassword
   }
 
-    onSubmit(){
-      console.log(this.loginForm.value);
-       this.authService.login(this.loginForm.value).subscribe((res)=>{
+  onSubmit() {
+    console.log(this.loginForm.value);
+    this.authService.login(this.loginForm.value).subscribe(
+      (res) => {
         console.log(res);
-        if (res.userId != null){
+        if (res.userId != null) {
           const user = {
-            id:res.userId,
-            role:res.userRole
-          }
+            id: res.userId,
+            role: res.userRole,
+          };
           StorageService.saveUser(user);
           StorageService.saveToken(res.jwt);
-          if (StorageService.isAdminLoggedIn())
+          if (StorageService.isAdminLoggedIn()) {
             this.router.navigateByUrl("/admin/dashboard");
-            else if (StorageService.isEmployeeLoggedIn())
-              this.router.navigateByUrl("/employee/dashboard");
-          this.snackbar.open("Успешный вход", "Закрыть", {duration:3000});
-        }else{
-          this.snackbar.open("Неккоректный вход. Попробуй еще раз", "Закрыть",{duration:3000,panelClass:"error-snackbar"})
+          } else if (StorageService.isEmployeeLoggedIn()) {
+            this.router.navigateByUrl("/employee/dashboard");
+          }
+          this.snackbar.open("Успешный вход", "Закрыть", { duration: 3000 });
+        } else {
+          this.snackbar.open("Некорректный вход. Попробуй еще раз", "Закрыть", {
+            duration: 3000,
+            panelClass: "error-snackbar",
+          });
         }
-      })
-  
-    }
+      },
+      (error) => {
+        if (error.status === 403) {
+          this.snackbar.open("Неправильный логин или пароль", "Закрыть", {
+            duration: 3000,
+            panelClass: "error-snackbar",
+          });
+        } else {
+          this.snackbar.open("Произошла ошибка. Попробуйте снова позже", "Закрыть", {
+            duration: 3000,
+            panelClass: "error-snackbar",
+          });
+        }
+      }
+    );
+  }
 
   }
 
